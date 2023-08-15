@@ -22,7 +22,7 @@ member_detour(SavePNG_detour, App::Thumbnail_cImportExport, bool(Resource::Resou
 	bool detoured(Resource::ResourceObject * pResource, RenderWare::Raster * pImage, Resource::Database * database,
 		bool forceReplace, bool disableSteganography) {
 		cAssetMetadataPtr metadata;
-		if (Pollinator::GetMetadata(pResource->GetResourceKey().instanceID,pResource->GetResourceKey().groupID,metadata)) {
+		if (Pollinator::GetMetadata(pResource->GetResourceKey().instanceID,pResource->GetResourceKey().groupID,metadata) && metadata->GetAuthorID() == -1) {
 			metadata->mAuthorName = offlineName->username;
 		}
 		return original_function(this,pResource,pImage,database,forceReplace,disableSteganography);
