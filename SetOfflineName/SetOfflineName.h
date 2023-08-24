@@ -9,7 +9,7 @@ public:
 	SetOfflineName();
 	~SetOfflineName();
 
-	static string16 username;
+	string16 username;
 
 	// Called when the cheat is invoked
 	void ParseLine(const ArgScript::Line& line) override;

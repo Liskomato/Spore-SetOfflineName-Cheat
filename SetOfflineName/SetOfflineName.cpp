@@ -31,7 +31,7 @@ void SetOfflineName::ParseLine(const ArgScript::Line& line)
 		App::ConsolePrintF("Please input a name.");
 	}
 	else {
-		username = (string16)name;
+		username.assign_convert(name);
 		if (!SaveData(username)) {
 			MessageBoxW(NULL, L"SetOfflineName::SaveData has failed!\n\nSaving data to property file has failed. If you get this error message, please contact Liskomato on GitHub or Discord and tell them what you were doing at the time.", L"SetOfflineName", MB_ICONERROR | MB_OK);
 		}
@@ -51,7 +51,7 @@ const char* SetOfflineName::GetDescription(ArgScript::DescriptionMode mode) cons
 	}
 }
 
-string16 GetNameFromData() 
+string16 SetOfflineName::GetNameFromData() 
 {
 	PropertyListPtr propList = new App::PropertyList();
 	FileStreamPtr stream = new IO::FileStream(GetFilepath().c_str());
@@ -65,13 +65,15 @@ string16 GetNameFromData()
 		return name;
 	}
 	else {
-		char8_t username[1024];
+		WCHAR username[1024];
 		DWORD username_len = 1024;
-		GetUserNameA(username,&username_len);
-		return (string16)username;
+		GetUserNameW(username,&username_len);
+		string16 name;
+		name.assign_convert(username);
+		return name;
 	}
 }
-string16 GetFilepath()
+string16 SetOfflineName::GetFilepath()
 {
 	// Get %APPDATA%
 	PWSTR appdata;
@@ -92,7 +94,7 @@ string16 GetFilepath()
 
 	return path;
 }
-bool SaveData(string16 name) 
+bool SetOfflineName::SaveData(string16 name) 
 {
 	PropertyListPtr propList = new App::PropertyList();
 	FileStreamPtr stream = new IO::FileStream(GetFilepath().c_str());
