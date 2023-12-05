@@ -1,0 +1,4 @@
+<mod displayName="Set Offline Name" unique="SetOfflineName-Cheat" description="A cheat that allows one to set their own author name outside of their Windows username while playing offline." installerSystemVersion="1.0.1.2" hasCustomInstaller="false" isExperimental="false" dllsBuild="2.5.280">
+<prerequisite>SetOfflineName.dll</prerequisite>
+<remove>SetOfflineName.dll</remove>
+</mod>

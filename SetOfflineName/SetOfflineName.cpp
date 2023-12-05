@@ -97,7 +97,11 @@ const char* SetOfflineName::GetDescription(ArgScript::DescriptionMode mode) cons
 		return "Sets author name for new creations.";
 	}
 	else {
-		return "SetOfflineName: Set your author name in new Spore creations.";
+		return "SetOfflineName: Sets your offline username in new Spore creations.\n"
+			   "Usage:\n"
+			   "SetOfflineName <name>: Sets your offline username to the string typed in.\n"
+			   "SetOfflineName -a: Select a Spore creation in the Sporepedia and its author will become your offline username.\n"
+			   "SetOfflineName -n: Select a Spore creation in the Sporepedia and its name will become your offline username.";
 	}
 }
 
