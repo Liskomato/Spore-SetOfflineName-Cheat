@@ -22,10 +22,17 @@ member_detour(SavePNG_detour, App::Thumbnail_cImportExport, bool(Resource::Resou
 	bool detoured(Resource::ResourceObject * pResource, RenderWare::Raster * pImage, Resource::Database * database,
 		bool forceReplace, bool disableSteganography) {
 		cAssetMetadataPtr metadata;
-		if (Pollinator::GetMetadata(pResource->GetResourceKey().instanceID,pResource->GetResourceKey().groupID,metadata) && metadata->GetAuthorID() == -1) {
+		if (Pollinator::GetMetadata(pResource->GetResourceKey().instanceID,pResource->GetResourceKey().groupID,metadata) && metadata->GetAuthorID() == -2) {
 			metadata->mAuthorName = offlineName->username;
+			metadata->mAuthorID = -3;
+			if (!ResourceManager.WriteResource(metadata.get())) {
+				App::ConsolePrintF("SetOfflineName: ERROR with saving edited metadata. Check if your creation still exists.");
+			}
 		}
-		return original_function(this,pResource,pImage,database,forceReplace,disableSteganography);
+
+		bool ret = original_function(this, pResource, pImage, database, forceReplace, disableSteganography);
+
+		return ret;
 	}
 };
 

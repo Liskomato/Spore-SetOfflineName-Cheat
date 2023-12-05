@@ -13,6 +13,7 @@ SetOfflineName::SetOfflineName()
 	else {
 		App::ConsolePrintF("Offline name set to %ls", username);
 	}
+	mode = SetOfflineName::SelectionMode::Off;
 }
 
 
@@ -26,19 +27,68 @@ void SetOfflineName::ParseLine(const ArgScript::Line& line)
 	// This method is called when your cheat is invoked.
 	// Put your cheat code here.
 
-	const char8_t* name = line.GetArgumentAt(0);
-	if (name == "") {
-		App::ConsolePrintF("Please input a name.");
+	
+
+	auto nameoption = line.GetOption("n", 0);
+	auto authoroption = line.GetOption("a",0);
+
+	if (nameoption || authoroption) {
+		if (nameoption && authoroption) {
+			App::ConsolePrintF("Please specify an argument between name (-n) and author (-a).");
+			return;
+		}
+		else if (nameoption) {
+			mode = SetOfflineName::SelectionMode::Name;
+		}
+		else if (authoroption) {
+			mode = SetOfflineName::SelectionMode::Author;
+		}
+		Sporepedia::ShopperRequest request(this);
+		Sporepedia::ShopperRequest::Show(request);
+
 	}
 	else {
-		username.assign_convert(name);
+		auto args = line.GetArguments(1);
+		if (args[0] == "") {
+			App::ConsolePrintF("Please input a name.");
+		}
+		else {
+			username.assign_convert(args[0]);
+			if (!SaveData(username)) {
+				MessageBoxW(NULL, L"SetOfflineName::SaveData has failed!\n\nSaving data to property file has failed. If you get this error message, please contact Liskomato on GitHub or Discord and tell them what you were doing at the time.", L"SetOfflineName", MB_ICONERROR | MB_OK);
+			}
+			else {
+				App::ConsolePrintF("Offline name set to %ls", username);
+			}
+		}
+	}
+}
+
+void SetOfflineName::OnShopperAccept(const ResourceKey& selection) {
+	cAssetMetadataPtr metadata;
+	if (Pollinator::GetMetadata(selection.instanceID, selection.groupID, metadata)) {
+		if (mode == SelectionMode::Name) {
+			username = metadata->GetName();
+		 }
+		else if (mode == SelectionMode::Author) {
+			username = metadata->GetAuthor();
+		}
+		else {
+			App::ConsolePrintF("Error: Mode has not been set correctly. Offline name is not changed.");
+			return;
+		}
 		if (!SaveData(username)) {
 			MessageBoxW(NULL, L"SetOfflineName::SaveData has failed!\n\nSaving data to property file has failed. If you get this error message, please contact Liskomato on GitHub or Discord and tell them what you were doing at the time.", L"SetOfflineName", MB_ICONERROR | MB_OK);
 		}
 		else {
-			App::ConsolePrintF("Offline name set to %ls",username);
+			App::ConsolePrintF("Offline name set to %ls", username);
 		}
 	}
+	else {
+		App::ConsolePrintF("Error: Metadata not found. Offline name has not been changed.");
+	}
+
+	mode = SelectionMode::Off;
 }
 
 const char* SetOfflineName::GetDescription(ArgScript::DescriptionMode mode) const
