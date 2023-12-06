@@ -24,7 +24,7 @@ member_detour(SavePNG_detour, App::Thumbnail_cImportExport, bool(Resource::Resou
 		cAssetMetadataPtr metadata;
 		if (Pollinator::GetMetadata(pResource->GetResourceKey().instanceID,pResource->GetResourceKey().groupID,metadata) && metadata->GetAuthorID() == -2) {
 			metadata->mAuthorName = offlineName->username;
-			metadata->mAuthorID = -3;
+		//	metadata->mAuthorID = -3;
 			if (!ResourceManager.WriteResource(metadata.get())) {
 				MessageBoxW(NULL, L"Detour of App::Thumbnail_cImportExport::SavePNG: ERROR with saving edited metadata. Check if your creation still exists.\n\nIf you get this error message, please contact Liskomato on GitHub or Discord and tell them what you were doing at the time.", L"SetOfflineName", MB_ICONERROR | MB_OK);
 				App::ConsolePrintF("SetOfflineName: ERROR with saving edited metadata. Check if your creation still exists.");
